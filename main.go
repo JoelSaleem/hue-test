@@ -66,6 +66,17 @@ func main() {
 		input, _ := reader.ReadString('\n')
 		input = strings.Replace(input, "\n", "", -1)
 
+		if input == "Off" {
+			lights, err := bridge.GetLights()
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			for _, l := range lights {
+				l.Off()
+			}
+		}
+
 		for _, s := range scenes {
 			if s.Name == input {
 				s.Recall(1)
