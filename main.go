@@ -12,13 +12,14 @@ import (
 )
 
 const (
-	USERNAME = ""
+	USERNAME   = ""
+	IP_ADDRESS = ""
 )
 
 func main() {
 	tm.Clear()
 
-	bridge := huego.New("192.168.68.106", USERNAME)
+	bridge := huego.New(IP_ADDRESS, USERNAME)
 
 	scenes, err := bridge.GetScenes()
 	if err != nil {
