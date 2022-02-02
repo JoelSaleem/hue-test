@@ -11,7 +11,6 @@ import (
 )
 
 // TODO ENV VARS
-// TODO PATH TO FAVOURITES
 const (
 	USERNAME        = "PWljrRcSocWuN-2XL4bosQA5Pr9aNtmjuA6-cqlN"
 	IP_ADDRESS      = "192.168.68.106"
@@ -20,6 +19,7 @@ const (
 
 func main() {
 	tm.Clear()
+	tm.MoveCursor(1, 1)
 
 	bridge := huego.New(IP_ADDRESS, USERNAME)
 
