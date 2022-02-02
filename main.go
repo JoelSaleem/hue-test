@@ -2,9 +2,6 @@ package main
 
 import (
 	"bufio"
-	"errors"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -16,8 +13,9 @@ import (
 // TODO ENV VARS
 // TODO PATH TO FAVOURITES
 const (
-	USERNAME   = "PWljrRcSocWuN-2XL4bosQA5Pr9aNtmjuA6-cqlN"
-	IP_ADDRESS = "192.168.68.106"
+	USERNAME        = "PWljrRcSocWuN-2XL4bosQA5Pr9aNtmjuA6-cqlN"
+	IP_ADDRESS      = "192.168.68.106"
+	FAVOURITES_PATH = "/Users/joelsaleem/.hue-test/faves"
 )
 
 func main() {
@@ -31,56 +29,24 @@ func main() {
 	}
 
 	reader := bufio.NewReader(os.Stdin)
-	// TODO: HANDLE CASE WITH NO FAVES
-	faves := make(map[string]bool)
+	favourites := Favourites{}
 	for {
 		tm.Clear()
 		tm.Flush()
 		tm.MoveCursor(1, 1)
-		bytes, err := ioutil.ReadFile("faves")
-		if err != nil {
-			if !errors.Is(err, os.ErrNotExist) {
-				log.Fatal(err)
-			} else {
-				fmt.Print("no favourites, loading all\n\n")
-			}
-		}
 
-		if len(bytes) > 0 {
-			data := strings.Split(string(bytes), "\n")
-			for i := range data {
-				faves[data[i]] = true
-			}
-		}
+		favourites = favourites.ReadFaves()
 
-		s := []huego.Scene{}
-		for _, scene := range scenes {
-			if len(faves) == 0 || faves[scene.Name] {
-				faves[scene.Name] = false
-				s = append(s, scene)
-			}
-		}
-
-		listScenes(s)
+		s := getScenesFromFavourites(scenes, favourites)
+		s.ListScenes()
 
 		input, _ := reader.ReadString('\n')
 		input = strings.Replace(input, "\n", "", -1)
 
 		if input == "Off" {
-			lights, err := bridge.GetLights()
-			if err != nil {
-				log.Fatalln(err)
-			}
-
-			for _, l := range lights {
-				l.Off()
-			}
-		}
-
-		for _, s := range scenes {
-			if s.Name == input {
-				s.Recall(1)
-			}
+			turnAllLightsOff(*bridge)
+		} else {
+			s.ActivateScene(input)
 		}
 
 	}
