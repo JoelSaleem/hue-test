@@ -42,7 +42,7 @@ func main() {
 			if !errors.Is(err, os.ErrNotExist) {
 				log.Fatal(err)
 			} else {
-				fmt.Println("no favourites, loading all")
+				fmt.Print("no favourites, loading all\n\n")
 			}
 		}
 
@@ -50,13 +50,13 @@ func main() {
 			data := strings.Split(string(bytes), "\n")
 			for i := range data {
 				faves[data[i]] = true
-				// faves = append(faves, data[i])
 			}
 		}
 
 		s := []huego.Scene{}
 		for _, scene := range scenes {
 			if len(faves) == 0 || faves[scene.Name] {
+				faves[scene.Name] = false
 				s = append(s, scene)
 			}
 		}
